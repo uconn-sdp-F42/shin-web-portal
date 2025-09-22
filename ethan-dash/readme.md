@@ -1,1 +1,0 @@
-### To run the application use python3 app.py
