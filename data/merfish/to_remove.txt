@@ -1,0 +1,7 @@
+section_number
+Unnamed: 0
+position
+cell_id
+scaled_x_microns
+scaled_y_microns
+cell_volume
