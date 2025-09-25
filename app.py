@@ -2,6 +2,7 @@
 from dash import Dash, html, dcc, callback, Output, Input
 import pandas
 import plotly.express as px
+import json
 
 # Incorporate data Merfish data
 merfish_df = pandas.read_csv('data/combined_23027_section1.csv')
@@ -31,19 +32,29 @@ app = Dash()
 # App layout
 app.layout = html.Div([
     html.H1(children='rodge/test-branch', style={'textAlign':'center'}),
-    dcc.Graph(id="cell-graph", figure=fig)
+    dcc.Graph(id="cell-graph", figure=fig),
+    html.Pre(id="cell-data", style={'border': 'thin lightgrey solid', 'overflowx': 'scroll'})
 ])
 
 @callback(
-    Input("cell-graph", "clickData")
+    Output("cell-data", "children"),
+    Input("cell-graph", "clickData"),
+
+    # prevents none subscriptable error
+    prevent_initial_call=True
 )
 
 def on_click(clickData):
     # extract adjusted_cell_id from click
     current_id = clickData['points'][0]['customdata'][0]
 
+
     # return row based on adjust_cell_id as a dictionary
-    print(merfish_df.loc[merfish_df['adjusted_cell_id'] == current_id].to_dict())
+    cell_data = merfish_df.loc[merfish_df['adjusted_cell_id'] == current_id].to_dict()
+
+
+    return json.dumps(cell_data, indent=2)
+    
 
 
 # Run the app
